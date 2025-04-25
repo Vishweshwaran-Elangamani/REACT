@@ -1,0 +1,285 @@
+import React, { useState, useEffect } from "react";
+import ReactDOM from "react-dom/client";
+import axios from "axios";
+
+interface Contact {
+  id: number;
+  name: string;
+  email: string;
+  contactNumber: string;
+  address: string;
+}
+
+interface Transaction {
+  transId: number;
+  transName: string;
+  transDescription: string;
+  transMode: string;
+}
+
+const App = () => {
+  const [contacts, setContacts] = useState<Contact[]>([]);
+  const [newContact, setNewContact] = useState<Contact>({
+    id: 0,
+    name: "",
+    email: "",
+    contactNumber: "",
+    address: "",
+  });
+
+  const [transactions, setTransactions] = useState<Transaction[]>([]);
+  const [newTransaction, setNewTransaction] = useState<Transaction>({
+    transId: 0,
+    transName: "",
+    transDescription: "",
+    transMode: "",
+  });
+
+  useEffect(() => {
+    axios
+      .get<Contact[]>("http://localhost:3000/users")
+      .then((response) => {
+        setContacts(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+
+    axios
+      .get<Transaction[]>("http://localhost:3000/Transactions")
+      .then((response) => {
+        setTransactions(response.data);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  }, []);
+
+  const handleContactSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    axios
+      .post<Contact>("http://localhost:3000/users", newContact)
+      .then((response) => {
+        setContacts([...contacts, response.data]);
+        setNewContact({
+          id: 0,
+          name: "",
+          email: "",
+          contactNumber: "",
+          address: "",
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleTransactionSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    axios
+      .post<Transaction>("http://localhost:3000/Transactions", newTransaction)
+      .then((response) => {
+        setTransactions([...transactions, response.data]);
+        setNewTransaction({
+          transId: 0,
+          transName: "",
+          transDescription: "",
+          transMode: "",
+        });
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
+
+  const handleContactChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    setNewContact({
+      ...newContact,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  const handleTransactionChange = (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
+    setNewTransaction({
+      ...newTransaction,
+      [event.target.name]: event.target.value,
+    });
+  };
+
+  return (
+    <div style={{ textAlign: "center", fontSize: "2rem" }}>
+      <h1 style={{ color: "blue" }}>Contact Management System</h1>
+      <form
+        onSubmit={handleContactSubmit}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <label>
+          Name:
+          <input
+            type="text"
+            name="name"
+            value={newContact.name}
+            onChange={handleContactChange}
+            style={{ margin: "10px" }}
+          />
+        </label>
+        <br />
+        <label>
+          Email:
+          <input
+            type="email"
+            name="email"
+            value={newContact.email}
+            onChange={handleContactChange}
+            style={{ margin: "10px" }}
+          />
+        </label>
+        <br />
+        <label>
+          Contact Number:
+          <input
+            type="tel"
+            name="contactNumber"
+            value={newContact.contactNumber}
+            onChange={handleContactChange}
+            style={{ margin: "10px" }}
+          />
+        </label>
+        <br />
+        <label>
+          Address:
+          <input
+            type="text"
+            name="address"
+            value={newContact.address}
+            onChange={handleContactChange}
+            style={{ margin: "10px" }}
+          />
+        </label>
+        <br />
+        <button type="submit" style={{ margin: "10px" }}>
+          Add Contact
+        </button>
+      </form>
+
+      <ul style={{ listStyleType: "none", padding: "0", margin: "0" }}>
+        {contacts.map((contact) => (
+          <li key={contact.id} style={{ margin: "10px" }}>
+            {contact.name} - {contact.email} - {contact.contactNumber} -{" "}
+            {contact.address}
+          </li>
+        ))}
+      </ul>
+
+      <h2 style={{ color: "blue", marginTop: "20px" }}>
+        Entered Contact Details
+      </h2>
+      <div>
+        <p>Name: {newContact.name}</p>
+        <p>Email: {newContact.email}</p>
+        <p>Contact Number: {newContact.contactNumber}</p>
+        <p>Address: {newContact.address}</p>
+      </div>
+
+      <h1 style={{ color: "green", marginTop: "50px" }}>
+        Transaction Management System
+      </h1>
+      <form
+        onSubmit={handleTransactionSubmit}
+        style={{
+          display: "flex",
+          flexDirection: "column",
+          alignItems: "center",
+        }}
+      >
+        <label>
+          Transaction ID:
+          <input
+            type="number"
+            name="transId"
+            value={newTransaction.transId}
+            onChange={handleTransactionChange}
+            style={{ margin: "10px" }}
+          />
+        </label>
+        <br />
+        <label>
+          Transaction Name:
+          <input
+            type="text"
+            name="transName"
+            value={newTransaction.transName}
+            onChange={handleTransactionChange}
+            style={{ margin: "10px" }}
+          />
+        </label>
+        <br />
+        <label>
+          Transaction Description:
+          <input
+            type="text"
+            name="transDescription"
+            value={newTransaction.transDescription}
+            onChange={handleTransactionChange}
+            style={{ margin: "10px" }}
+          />
+        </label>
+        <br />
+        <label>
+          Transaction Mode:
+          <input
+            type="text"
+            name="transMode"
+            value={newTransaction.transMode}
+            onChange={handleTransactionChange}
+            style={{ margin: "10px" }}
+          />
+        </label>
+        <br />
+        <button type="submit" style={{ margin: "10px" }}>
+          Add Transaction
+        </button>
+      </form>
+
+      <ul
+        style={{
+          listStyleType: "none",
+          padding: "0",
+          margin: "0",
+          marginTop: "50px",
+        }}
+      >
+        {transactions.map((transaction) => (
+          <li key={transaction.transId} style={{ margin: "10px" }}>
+            {transaction.transName} - {transaction.transDescription} -{" "}
+            {transaction.transMode}
+          </li>
+        ))}
+      </ul>
+
+      <h2 style={{ color: "green", marginTop: "20px" }}>
+        Entered Transaction Details
+      </h2>
+      <div>
+        <p>Transaction ID: {newTransaction.transId}</p>
+        <p>Transaction Name: {newTransaction.transName}</p>
+        <p>Transaction Description: {newTransaction.transDescription}</p>
+        <p>Transaction Mode: {newTransaction.transMode}</p>
+      </div>
+    </div>
+  );
+};
+
+ReactDOM.createRoot(document.getElementById("root") as HTMLElement).render(
+  <React.StrictMode>
+    <App />
+  </React.StrictMode>
+);
+
+export default App;
