@@ -22,7 +22,7 @@ create table pets(
 
 insert into adoption_house_location values (1, "chennai");
 insert into adoption_house_location values (2, "CBE");
-insert into adoption_house_location values (3, "Maduria");
+insert into adoption_house_location values (3, "Madurai");
 
 insert into adoption_house values (1, "Pets House", 1);
 insert into adoption_house values (2, "Pets caves", 2);
