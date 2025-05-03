@@ -20,9 +20,9 @@ create table pets(
     foreign key(adoption_house_id) references adoption_house(adoption_house_id)
 );
 
-insert into adoption_house_location values (1, "chennai");
-insert into adoption_house_location values (2, "CBE");
-insert into adoption_house_location values (3, "Madurai");
+insert into adoption_house_location values (1, "Location 1");
+insert into adoption_house_location values (2, "Location 2");
+insert into adoption_house_location values (3, "Location 3");
 
 insert into adoption_house values (1, "Pets House", 1);
 insert into adoption_house values (2, "Pets caves", 2);
