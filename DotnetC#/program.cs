@@ -3,29 +3,30 @@ using System.Collections.Generic;
 using System.Data;
 using MySql.Data.MySqlClient;
 
-interface IOrderService
+interface IArtworkervice
 {
-    void CreateOrder(string artworkid, string artistname, string artworkcatagory, string discription);
-    void ReadOrders();
-    void UpdateOrder(int id, string artworkid, string artistname, string artworkcatagory, string discription);
-    void DeleteOrder(int id);
-    void SearchOrder(string artworkid);
+    //artwork
+    void CreateArtWork(string artworkid, string artistname, string artworkcatagory, string discription);
+    void    ReadArtwork();
+    void UpdateArtwork(int id, string artworkid, string artistname, string artworkcatagory, string discription);
+    void DeleteArtwork(int id);
+    void SearchArtwork(string artworkid);
 }
 
-class OrderService : IOrderService
+class Artworkervice : IArtworkervice
 {
     private readonly string connStr;
 
-    public OrderService(string connStr)
+    public Artworkervice(string connStr)
     {
         this.connStr = connStr;
     }
 
-    public void CreateOrder(string artworkid, string artistname, string artworkcatagory, string discription)
+    public void CreateArtWork(string artworkid, string artistname, string artworkcatagory, string discription)
     {
         using var conn = new MySqlConnection(connStr);
         conn.Open();
-        var cmd = new MySqlCommand("INSERT INTO orders (artwork_id, artist_name, artwork_catagory, discription) VALUES (@artworkid, @artistname, @artworkcatagory, @discription)", conn);
+        var cmd = new MySqlCommand("INSERT INTO Artwork (artwork_id, artist_name, artwork_catagory, discription) VALUES (@artworkid, @artistname, @artworkcatagory, @discription)", conn);
         cmd.Parameters.AddWithValue("@artworkid", artworkid);
         cmd.Parameters.AddWithValue("@artistname", artistname);
         cmd.Parameters.AddWithValue("@artworkcatagory", artworkcatagory);
@@ -34,11 +35,11 @@ class OrderService : IOrderService
         Console.WriteLine("Artwork created.");
     }
 
-    public void ReadOrders()
+    public void    ReadArtwork()
     {
         using var conn = new MySqlConnection(connStr);
         conn.Open();
-        var cmd = new MySqlCommand("SELECT * FROM orders", conn);
+        var cmd = new MySqlCommand("SELECT * FROM Artwork", conn);
         using var reader = cmd.ExecuteReader();
         while (reader.Read())
         {
@@ -46,11 +47,11 @@ class OrderService : IOrderService
         }
     }
 
-    public void UpdateOrder(int id, string artworkid, string artistname, string artworkcatagory, string discription)
+    public void UpdateArtwork(int id, string artworkid, string artistname, string artworkcatagory, string discription)
     {
         using var conn = new MySqlConnection(connStr);
         conn.Open();
-        var cmd = new MySqlCommand("UPDATE orders SET artwork_id=@artworkid, artist_name=@artistname, artwork_catagory=@artworkcatagory, discription=@discription WHERE id=@id", conn);
+        var cmd = new MySqlCommand("UPDATE Artwork SET artwork_id=@artworkid, artist_name=@artistname, artwork_catagory=@artworkcatagory, discription=@discription WHERE id=@id", conn);
         cmd.Parameters.AddWithValue("@id", id);
         cmd.Parameters.AddWithValue("@artworkid", artworkid);
         cmd.Parameters.AddWithValue("@artistname", artistname);
@@ -60,11 +61,11 @@ class OrderService : IOrderService
         Console.WriteLine("Artwork updated.");
     }
 
-    public void SearchOrder(string artworkid)
+    public void SearchArtwork(string artworkid)
     {
         using var conn = new MySqlConnection(connStr);
         conn.Open();
-        var cmd = new MySqlCommand("SELECT * FROM orders WHERE artwork_id=@artworkid", conn);
+        var cmd = new MySqlCommand("SELECT * FROM Artwork WHERE artwork_id=@artworkid", conn);
         cmd.Parameters.AddWithValue("@artworkid", artworkid);
         using var reader = cmd.ExecuteReader();
         if (reader.Read())
@@ -77,11 +78,11 @@ class OrderService : IOrderService
         }
     }
 
-    public void DeleteOrder(int id)
+    public void DeleteArtwork(int id)
     {
         using var conn = new MySqlConnection(connStr);
         conn.Open();
-        var cmd = new MySqlCommand("DELETE FROM orders WHERE id=@id", conn);
+        var cmd = new MySqlCommand("DELETE FROM Artwork WHERE id=@id", conn);
         cmd.Parameters.AddWithValue("@id", id);
         cmd.ExecuteNonQuery();
         Console.WriteLine("Artwork deleted.");
@@ -92,7 +93,7 @@ class Program
 {
     static void Main()
     {
-        var orderService = new OrderService("server=localhost;user=root;password=test;database=artworkdb;");
+        var Artworkervice = new Artworkervice("server=localhost;user=root;password=test;database=artworkdb;");
 
         while (true)
         {
@@ -119,7 +120,7 @@ class Program
                     string discription = Console.ReadLine();
                     try
                     {
-                        orderService.CreateOrder(artworkid, artistname, artworkcatagory, discription);
+                        Artworkervice.CreateArtWork(artworkid, artistname, artworkcatagory, discription);
                     }
                     catch (Exception ex)
                     {
@@ -133,7 +134,7 @@ class Program
                 case "2":
                     try
                     {
-                        orderService.ReadOrders();
+                        Artworkervice.   ReadArtwork();
                     }
                     catch (Exception ex)
                     {
@@ -161,7 +162,7 @@ class Program
                     {
                         try
                         {
-                            orderService.UpdateOrder(updateId, newArtworkid, newArtistname, newArtworkcatagory, newDiscription);
+                            Artworkervice.UpdateArtwork(updateId, newArtworkid, newArtistname, newArtworkcatagory, newDiscription);
                             Console.WriteLine("Artwork updated successfully.");
                         }
                         catch (Exception ex)
@@ -187,7 +188,7 @@ class Program
                     {
                         try
                         {
-                            orderService.DeleteOrder(deleteId);
+                            Artworkervice.DeleteArtwork(deleteId);
                             Console.WriteLine("Artwork deleted.");
                         }
                         catch (Exception ex)
@@ -209,7 +210,7 @@ class Program
                     string search = Console.ReadLine();
                     try
                     {
-                        orderService.SearchOrder(search);
+                        Artworkervice.SearchArtwork(search);
                     }
                     catch (Exception ex)
                     {
